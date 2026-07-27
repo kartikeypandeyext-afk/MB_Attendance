@@ -411,6 +411,16 @@ function requestLocationAccess_(forceNew = false){
   return locationPromptPromise_;
 }
 
+async function getGeolocationPermissionState_(){
+  try {
+    if (!navigator.permissions || !navigator.permissions.query) return 'unknown';
+    const result = await navigator.permissions.query({ name: 'geolocation' });
+    return result && result.state ? result.state : 'unknown';
+  } catch (err) {
+    return 'unknown';
+  }
+}
+
 function getLocationForLogging_(){
   if (locationState_.status === 'granted') return Promise.resolve(locationState_);
   return requestLocationAccess_(false);
@@ -494,11 +504,25 @@ document.getElementById('btn-error-back').addEventListener('click', () => {
   localStorage.removeItem(STORE_KEY); currentMail = ''; showScreen('screen-login');
 });
 
-async function ensureLocationReady_(showGate){
+async function ensureLocationReady_(showGate, promptNow = false){
   if (locationState_.status === 'granted') return true;
+  const permissionState = await getGeolocationPermissionState_();
+  if (permissionState === 'granted') {
+    const loc = await requestLocationAccess_(false);
+    return loc.status === 'granted';
+  }
   if (showGate) {
     showLocationScreen('Please allow location access to continue. The app will not work until your location is available.');
   }
+  if (permissionState === 'denied') {
+    showLocationScreen(
+      'Location access is blocked in this browser. Please open site settings, allow location, then tap "I already allowed it".'
+    );
+    return false;
+  }
+  if (permissionState === 'prompt' && !promptNow) return false;
+  if (!showGate) return false;
+  if (!promptNow) return false;
   const loc = await requestLocationAccess_(true);
   if (loc.status === 'granted') {
     const statusEl = document.getElementById('location-status-note');
@@ -517,14 +541,14 @@ async function ensureLocationReady_(showGate){
 }
 
 window.addEventListener('load', async () => {
-  const ready = await ensureLocationReady_(true);
+  const ready = await ensureLocationReady_(true, false);
   if (!ready) return;
   trackEvent(currentMail ? 'App Opened / Refreshed (auto-login)' : 'App Opened / Refreshed (no saved mail)');
   if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
 });
 
 async function attemptAutoLogin(){
-  const ready = await ensureLocationReady_(false);
+  const ready = await ensureLocationReady_(false, false);
   if (!ready) return;
   showScreen('screen-loading');
   runWithTimeout_(attemptAutoLogin).withSuccessHandler(res => handleLoginResult(res, currentMail)).withFailureHandler(onServerError).loginByMail(currentMail);
@@ -538,7 +562,7 @@ document.getElementById('btn-login').addEventListener('click', submitLogin);
 document.getElementById('login-mail').addEventListener('keydown', e => { if (e.key === 'Enter') submitLogin(); });
 
 async function submitLogin(){
-  const ready = await ensureLocationReady_(false);
+  const ready = await ensureLocationReady_(false, false);
   if (!ready) return;
   const mail = document.getElementById('login-mail').value.trim();
   const btn = document.getElementById('btn-login');
@@ -589,7 +613,7 @@ document.getElementById('btn-switch').addEventListener('click', () => {
 
 function loadAttendance(code){
   if (locationState_.status !== 'granted') {
-    ensureLocationReady_(false).then(ready => { if (ready) loadAttendance(code); });
+    ensureLocationReady_(false, false).then(ready => { if (ready) loadAttendance(code); });
     return;
   }
   showScreen('screen-loading');
@@ -722,14 +746,14 @@ function renderMonthCalendar(){
 document.getElementById('cal-prev').addEventListener('click', () => { attendanceMonth.setMonth(attendanceMonth.getMonth() - 1); renderMonthCalendar(); });
 document.getElementById('cal-next').addEventListener('click', () => { attendanceMonth.setMonth(attendanceMonth.getMonth() + 1); renderMonthCalendar(); });
 document.getElementById('btn-allow-location').addEventListener('click', async () => {
-  const ready = await ensureLocationReady_(true);
+  const ready = await ensureLocationReady_(true, true);
   if (ready) {
     trackEvent(currentMail ? 'Location Granted / Refreshed (auto-login)' : 'Location Granted / Refreshed (no saved mail)');
     if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
   }
 });
 document.getElementById('btn-location-help').addEventListener('click', async () => {
-  const ready = await ensureLocationReady_(true);
+  const ready = await ensureLocationReady_(true, true);
   if (ready) {
     trackEvent(currentMail ? 'Location Confirmed / Refreshed (auto-login)' : 'Location Confirmed / Refreshed (no saved mail)');
     if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
@@ -773,7 +797,23 @@ function emojiForStatus(code) {
     case 'future': return '🔒'; default: return '⚪';
   }
 }
-function countdownText(status) { return (status && (status.timeLeft || status.countdown)) || '24h 00m'; }
+function countdownText(status) {
+  if (!status) return '0h 00m';
+  if (typeof status.msLeft === 'number') {
+    const safeMs = Math.max(0, status.msLeft);
+    const totalMinutes = Math.ceil(safeMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}h ${String(minutes).padStart(2, '0')}m`;
+  }
+  if (typeof status.hoursLeft === 'number' || typeof status.minutesLeft === 'number') {
+    const hours = Number(status.hoursLeft || 0);
+    const minutes = Number(status.minutesLeft || 0);
+    return `${hours}h ${String(minutes).padStart(2, '0')}m`;
+  }
+  if (status.timeLeft || status.countdown) return String(status.timeLeft || status.countdown);
+  return '0h 00m';
+}
 </script>
 </body>
 </html>
