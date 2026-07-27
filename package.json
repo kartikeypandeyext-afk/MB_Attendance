@@ -1,9 +1,0 @@
-{
-  "name": "milkbasket-attendance-netlify",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Milkbasket Attendance passbook — Netlify Functions backend replacing Apps Script",
-  "dependencies": {
-    "googleapis": "^140.0.0"
-  }
-}
