@@ -49,6 +49,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   input:focus{border-color:var(--green);background:#fff;}
   .hint{font-size:13px;color:var(--ink-soft);margin:8px 4px 22px;}
   .hint b{color:var(--green-dk);}
+  .data-collection-box{background:var(--milk);border:1px solid var(--milk-2);border-radius:16px;padding:14px 14px 12px;margin:18px 0 18px;text-align:left;}
+  .data-collection-box h4{margin:0 0 8px;font-size:13px;color:var(--green-dk);font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+  .data-collection-box ul{margin:0;padding:0 0 0 18px;color:var(--ink-soft);font-size:13px;line-height:1.5;}
+  .data-collection-box li{margin:4px 0;}
+  .location-optional-box{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:#F5FAF7;border:1px dashed var(--green);text-align:left;}
+  .location-optional-box .title-sm{font-size:13px;font-weight:800;color:var(--green-dk);margin:0 0 6px;}
+  .location-optional-box .text-sm{font-size:12px;line-height:1.45;color:var(--ink-soft);margin:0 0 10px;}
+  .location-optional-box button{width:100%;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:11px 14px;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;}
   button.btn{width:100%;font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:700;padding:17px 18px;border:none;border-radius:16px;background:var(--green);color:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(31,107,76,.28);display:flex;align-items:center;justify-content:center;gap:8px;}
   button.btn:active{transform:scale(.97);}
   button.btn:disabled{opacity:.55;box-shadow:none;}
@@ -181,8 +189,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <div class="content" style="align-items:center;">
     <div class="card" style="text-align:center;">
       <svg class="hero-icon" viewBox="0 0 100 100"><use href="#warnSymbol"/></svg>
-      <div class="title">Location access required</div>
-      <div class="subtitle" id="location-message">Please allow location access to continue. The app will not work until your location is available.</div>
+      <div class="title">Location access optional</div>
+      <div class="subtitle" id="location-message">You can continue without location. If you allow it, we will include location in your response logs.</div>
       <div class="location-status" id="location-status-note"></div>
       <button class="btn" id="btn-allow-location">Allow Location Access</button>
       <button class="btn ghost" id="btn-location-help" type="button">I already allowed it</button>
@@ -216,6 +224,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <label class="field-label" for="login-mail">Your Mail ID</label>
       <input type="email" id="login-mail" placeholder="you@example.com" autocomplete="off">
       <div class="hint">Only your own attendance will be shown — tied to this mail ID.</div>
+      <div class="data-collection-box" aria-label="Data collection notice">
+        <h4>What we store</h4>
+        <ul>
+          <li><b>Mail ID</b> used to find your record</li>
+          <li><b>MB / vendor code</b> used to load attendance</li>
+          <li><b>Attendance status</b> and planned society visibility</li>
+          <li><b>Location</b> only when browser permission is granted</li>
+          <li><b>Device info</b> like browser, platform, language, and screen size</li>
+          <li><b>Activity logs</b> such as button clicks and page open events</li>
+          <li><b>Timestamp</b> for response-sheet entries</li>
+        </ul>
+      </div>
+      <div class="location-optional-box">
+        <div class="title-sm">Location is optional</div>
+        <div class="text-sm">If you allow it, we store your location with activity logs. If you skip it, the app still works normally.</div>
+        <button type="button" id="btn-allow-location-optional">Allow Location Access</button>
+      </div>
       <button class="btn" id="btn-login"><span id="login-btn-text">Continue</span></button>
     </div>
   </div>
@@ -421,8 +446,12 @@ async function getGeolocationPermissionState_(){
   }
 }
 
-function getLocationForLogging_(){
-  if (locationState_.status === 'granted') return Promise.resolve(locationState_);
+async function getLocationForLogging_(){
+  if (locationState_.status === 'granted') return locationState_;
+  const permissionState = await getGeolocationPermissionState_();
+  if (permissionState !== 'granted') {
+    return { status: permissionState === 'denied' ? 'denied' : 'not_granted' };
+  }
   return requestLocationAccess_(false);
 }
 
@@ -505,51 +534,15 @@ document.getElementById('btn-error-back').addEventListener('click', () => {
 });
 
 async function ensureLocationReady_(showGate, promptNow = false){
-  if (locationState_.status === 'granted') return true;
-  const permissionState = await getGeolocationPermissionState_();
-  if (permissionState === 'granted') {
-    const loc = await requestLocationAccess_(false);
-    return loc.status === 'granted';
-  }
-  if (showGate) {
-    showLocationScreen('Please allow location access to continue. The app will not work until your location is available.');
-  }
-  if (permissionState === 'denied') {
-    showLocationScreen(
-      'Location access is blocked in this browser. Please open site settings, allow location, then tap "I already allowed it".'
-    );
-    return false;
-  }
-  if (permissionState === 'prompt' && !promptNow) return false;
-  if (!showGate) return false;
-  if (!promptNow) return false;
-  const loc = await requestLocationAccess_(true);
-  if (loc.status === 'granted') {
-    const statusEl = document.getElementById('location-status-note');
-    if (statusEl) {
-      statusEl.textContent = 'Location access confirmed. You can continue now.';
-      statusEl.className = 'location-status ok';
-    }
-    return true;
-  }
-  let message = 'Please allow location access to continue. The app will not work until your location is available.';
-  if (loc.status === 'unsupported') message = 'This browser does not support location access. Please use a browser that supports it.';
-  if (loc.status === 'denied') message = 'Location access is blocked. Please allow it in your browser settings, then tap "I already allowed it".';
-  if (loc.status === 'failed') message = 'We could not read your location. Please try again and allow location access.';
-  showLocationScreen(message, loc.message || '');
-  return false;
+  return true;
 }
 
 window.addEventListener('load', async () => {
-  const ready = await ensureLocationReady_(true, false);
-  if (!ready) return;
   trackEvent(currentMail ? 'App Opened / Refreshed (auto-login)' : 'App Opened / Refreshed (no saved mail)');
   if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
 });
 
 async function attemptAutoLogin(){
-  const ready = await ensureLocationReady_(false, false);
-  if (!ready) return;
   showScreen('screen-loading');
   runWithTimeout_(attemptAutoLogin).withSuccessHandler(res => handleLoginResult(res, currentMail)).withFailureHandler(onServerError).loginByMail(currentMail);
 }
@@ -562,8 +555,6 @@ document.getElementById('btn-login').addEventListener('click', submitLogin);
 document.getElementById('login-mail').addEventListener('keydown', e => { if (e.key === 'Enter') submitLogin(); });
 
 async function submitLogin(){
-  const ready = await ensureLocationReady_(false, false);
-  if (!ready) return;
   const mail = document.getElementById('login-mail').value.trim();
   const btn = document.getElementById('btn-login');
   const txt = document.getElementById('login-btn-text');
@@ -612,10 +603,6 @@ document.getElementById('btn-switch').addEventListener('click', () => {
 });
 
 function loadAttendance(code){
-  if (locationState_.status !== 'granted') {
-    ensureLocationReady_(false, false).then(ready => { if (ready) loadAttendance(code); });
-    return;
-  }
   showScreen('screen-loading');
   runWithTimeout_(() => loadAttendance(code)).withSuccessHandler(renderAttendance).withFailureHandler(onServerError).getAttendance(code);
 }
@@ -748,15 +735,28 @@ document.getElementById('cal-next').addEventListener('click', () => { attendance
 document.getElementById('btn-allow-location').addEventListener('click', async () => {
   const ready = await ensureLocationReady_(true, true);
   if (ready) {
-    trackEvent(currentMail ? 'Location Granted / Refreshed (auto-login)' : 'Location Granted / Refreshed (no saved mail)');
+    trackEvent(currentMail ? 'Location Enabled / Auto-login' : 'Location Enabled / Manual');
     if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
   }
 });
 document.getElementById('btn-location-help').addEventListener('click', async () => {
-  const ready = await ensureLocationReady_(true, true);
-  if (ready) {
-    trackEvent(currentMail ? 'Location Confirmed / Refreshed (auto-login)' : 'Location Confirmed / Refreshed (no saved mail)');
-    if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
+  showScreen(currentMail ? 'screen-attendance' : 'screen-login');
+});
+document.getElementById('btn-allow-location-optional').addEventListener('click', async () => {
+  const loc = await requestLocationAccess_(true);
+  if (loc.status === 'granted') {
+    const statusEl = document.getElementById('location-status-note');
+    if (statusEl) {
+      statusEl.textContent = 'Location enabled. Future activity logs will include it.';
+      statusEl.className = 'location-status ok';
+    }
+    trackEvent('Location Permission Enabled');
+  } else {
+    const statusEl = document.getElementById('location-status-note');
+    if (statusEl) {
+      statusEl.textContent = 'Location not enabled. The app still works normally.';
+      statusEl.className = 'location-status';
+    }
   }
 });
 
