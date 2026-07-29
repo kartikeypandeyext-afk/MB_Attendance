@@ -48,6 +48,30 @@ async function readRange(range) {
   return res.data.values || [];
 }
 
+// ------------------------------------------------------------------
+// QUOTA GUARD: every login/attendance load used to issue 4-5 separate
+// API calls per sheet (one to find the header row, another to read it,
+// another for the data...). Since ALL 600 associates go through the
+// SAME service account, every one of those calls counts against one
+// shared "per user" quota bucket — so it added up fast under load.
+//
+// Fix: read each whole sheet in ONE call, then do all header-detection
+// and row-matching in memory. Also cache that single read for a few
+// seconds so a burst of logins around the same time (e.g. everyone
+// opening the app at 9am) reuses the same data instead of re-fetching
+// it per request on a warm function instance.
+// ------------------------------------------------------------------
+const _sheetCache = new Map(); // sheetName -> { rows, expiresAt }
+const CACHE_TTL_MS = 20000; // 20s — short enough that "Pending" countdowns stay accurate
+
+async function getWholeSheet(sheetName) {
+  const cached = _sheetCache.get(sheetName);
+  if (cached && cached.expiresAt > Date.now()) return cached.rows;
+  const rows = await readRange(`${sheetName}!A1:ZZ100000`).catch(() => []);
+  _sheetCache.set(sheetName, { rows, expiresAt: Date.now() + CACHE_TTL_MS });
+  return rows;
+}
+
 async function appendRow(sheetName, rowValues) {
   const api = await getSheetsApi();
   await api.spreadsheets.values.append({
@@ -71,21 +95,24 @@ function findHeaderRowIndex(block, label) {
   return null;
 }
 
-async function findHeaderRow() {
-  const block = await readRange(`${SHEET_DATA_NAME}!A1:ZZ${HEADER_SCAN_MAX_ROWS}`);
-  return findHeaderRowIndex(block, 'mb code') || 1; // fallback: row 1
+// One read for the whole sheet, then header row / headers / data rows are
+// all sliced out of that same in-memory array — this is what used to be
+// 2-4 separate API calls and is now exactly 1 (cached for CACHE_TTL_MS).
+async function getSheet1Parsed() {
+  const all = await getWholeSheet(SHEET_DATA_NAME);
+  const scanBlock = all.slice(0, HEADER_SCAN_MAX_ROWS);
+  const headerRowIdx = findHeaderRowIndex(scanBlock, 'mb code') || 1; // 1-based
+  const headers = all[headerRowIdx - 1] || [];
+  const dataRows = all.slice(headerRowIdx); // everything after the header row
+  return { headers, dataRows };
 }
 
 async function getHeaders() {
-  const headerRow = await findHeaderRow();
-  const rows = await readRange(`${SHEET_DATA_NAME}!A${headerRow}:ZZ${headerRow}`);
-  return rows[0] || [];
+  return (await getSheet1Parsed()).headers;
 }
 
 async function getDataRows() {
-  const headerRow = await findHeaderRow();
-  const rows = await readRange(`${SHEET_DATA_NAME}!A${headerRow + 1}:ZZ100000`);
-  return rows;
+  return (await getSheet1Parsed()).dataRows;
 }
 
 function normalizeCode(code) {
@@ -144,7 +171,7 @@ function getDateColumns(headers) {
 // Mail lookup + row lookup
 // ------------------------------------------------------------------
 async function findCodeForMail(mail) {
-  const rows = await readRange(`${SHEET_MAIL_NAME}!A1:B100000`);
+  const rows = await getWholeSheet(SHEET_MAIL_NAME);
   const target = normalizeMail(mail);
   for (const [mbCode, mailVal] of rows) {
     if (mailVal && normalizeMail(mailVal) === target) return String(mbCode || '').trim();
@@ -153,8 +180,7 @@ async function findCodeForMail(mail) {
 }
 
 async function findRowByCode(code) {
-  const headers = await getHeaders();
-  const rows = await getDataRows();
+  const { headers, dataRows: rows } = await getSheet1Parsed(); // 1 cached read covers both
   const vendorIdx = colIndex(headers, ['Vendor Emp. Code', 'Vendor Code', 'Vendor']);
   const mbIdx = colIndex(headers, ['MB Code']);
   const target = normalizeCode(code);
@@ -186,21 +212,22 @@ function buildProfile(headers, row) {
 // ------------------------------------------------------------------
 // PLANNED sheet
 // ------------------------------------------------------------------
-async function findPlannedHeaderRow() {
-  const block = await readRange(`${SHEET_PLANNED_NAME}!A1:ZZ${HEADER_SCAN_MAX_ROWS}`).catch(() => []);
-  return findHeaderRowIndex(block, 'society id') || 1;
+async function getPlannedParsed() {
+  const all = await getWholeSheet(SHEET_PLANNED_NAME);
+  if (all.length === 0) return { headers: null, dataRows: [] };
+  const scanBlock = all.slice(0, HEADER_SCAN_MAX_ROWS);
+  const headerRowIdx = findHeaderRowIndex(scanBlock, 'society id') || 1;
+  const headers = all[headerRowIdx - 1] || null;
+  const dataRows = all.slice(headerRowIdx);
+  return { headers, dataRows };
 }
 
 async function getPlannedHeaders() {
-  const headerRow = await findPlannedHeaderRow();
-  const rows = await readRange(`${SHEET_PLANNED_NAME}!A${headerRow}:ZZ${headerRow}`).catch(() => []);
-  return rows[0] || null;
+  return (await getPlannedParsed()).headers;
 }
 
 async function getPlannedRows() {
-  const headerRow = await findPlannedHeaderRow();
-  const rows = await readRange(`${SHEET_PLANNED_NAME}!A${headerRow + 1}:ZZ100000`).catch(() => []);
-  return rows;
+  return (await getPlannedParsed()).dataRows;
 }
 
 function plannedCellMatchesCode(cell, targetNormalized) {
@@ -239,9 +266,8 @@ function parsePlannedDateCell(cell) {
 
 async function getPlannedForCode(code, todayMidnight) {
   try {
-    const headers = await getPlannedHeaders();
+    const { headers, dataRows: rows } = await getPlannedParsed(); // 1 cached read
     if (!headers) return [];
-    const rows = await getPlannedRows();
     const target = normalizeCode(code);
     const idx = (n) => colIndex(headers, n);
 
@@ -306,7 +332,7 @@ function classifyStatus(raw, colDate, today, now) {
 // ------------------------------------------------------------------
 // RESPONSE sheet (auto-create + append, mirrors ensureResponseSheet_/logResponse)
 // ------------------------------------------------------------------
-let _responseSheetChecked = false;
+let _responseSheetChecked = false; // stays true for the life of this warm function instance
 async function ensureResponseSheet() {
   if (_responseSheetChecked) return;
   const api = await getSheetsApi();
