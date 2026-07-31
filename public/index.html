@@ -1,804 +1,251 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+'https://www.googletagmanager.com/googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-PGRSQ9FS');</script>
 <!-- End Google Tag Manager -->
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1F6B4C">
-<meta name="description" content="Check your daily attendance records, incentive eligibility, and planned society visits on the Milkbasket Growth Team Attendance Portal.">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MB Attendance">
-<title>Milkbasket Attendance - Associate Passbook</title>
+<meta name="description" content="Milkbasket BDE Attendance Portal Link Changed - Please visit the official homepage.">
+<title>Milkbasket Attendance - App Shifted / लिंक बदल गया है</title>
+
+<!-- Fonts & Tailwind CSS -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-  /* === Styles unchanged from the Apps Script version === */
-  :root{
-    --milk:#FBF9F4;--milk-2:#F1ECE0;--ink:#1C2621;--ink-soft:#5C6B62;
-    --green:#1F6B4C;--green-dk:#154A34;--green-lt:#E4F2EA;
-    --amber:#F2A93B;--amber-lt:#FDF1DC;--red:#D64545;--red-lt:#FBE7E7;
-    --slate:#8A97A0;--slate-lt:#EDF0F2;--blue:#3E7BFA;--blue-lt:#E9F0FF;
-    --radius-lg:22px;--radius-md:16px;--shadow:0 10px 30px rgba(28,38,33,0.10);
+  :root {
+    --milk: #FBF9F4;
+    --milk-card: #FFFFFF;
+    --ink: #1C2621;
+    --ink-soft: #5C6B62;
+    --green: #1F6B4C;
+    --green-dk: #154A34;
+    --green-lt: #E4F2EA;
+    --amber: #F2A93B;
+    --amber-lt: #FDF1DC;
+    --wa-green: #25D366;
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:auto;min-height:100%;}
-  body{background:var(--milk);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-tap-highlight-color:transparent;}
-  h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;font-weight:700;margin:0;}
-  .screen{max-width:480px;margin:0 auto;min-height:100vh;display:none;flex-direction:column;position:relative;}
-  .screen.active{display:flex;}
-  .brandbar{display:flex;align-items:center;gap:10px;padding:18px 20px 14px;}
-  .brandbar .brandbar-logo{height:32px;width:auto;flex-shrink:0;display:block;}
-  .brandbar h1{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:14px;color:var(--ink-soft);margin:0;display:inline-block;}
-  .brandbar .word small{display:block;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase;}
-  .content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:10px 24px 40px;}
-  .card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:28px 24px;}
-  .hero-icon{width:84px;height:84px;margin:0 auto 18px;display:block;}
-  .title{font-size:24px;text-align:center;color:var(--green-dk);margin-bottom:6px;}
-  .subtitle{font-size:15px;text-align:center;color:var(--ink-soft);margin-bottom:26px;line-height:1.5;}
-  label.field-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin:0 0 8px 4px;}
-  input[type=text],input[type=email]{width:100%;font-family:'Inter',sans-serif;font-size:20px;font-weight:700;letter-spacing:.03em;padding:16px;border-radius:14px;border:2px solid var(--milk-2);background:var(--milk-2);color:var(--ink);outline:none;transition:border-color .15s,background .15s;}
-  input[type=email]{text-transform:none;font-size:17px;}
-  input:focus{border-color:var(--green);background:#fff;}
-  .hint{font-size:13px;color:var(--ink-soft);margin:8px 4px 22px;}
-  .hint b{color:var(--green-dk);}
-  .data-collection-box{background:var(--milk);border:1px solid var(--milk-2);border-radius:16px;padding:14px 14px 12px;margin:18px 0 18px;text-align:left;}
-  .data-collection-box h4{margin:0 0 8px;font-size:13px;color:var(--green-dk);font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
-  .data-collection-box ul{margin:0;padding:0 0 0 18px;color:var(--ink-soft);font-size:13px;line-height:1.5;}
-  .data-collection-box li{margin:4px 0;}
-  .location-optional-box{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:#F5FAF7;border:1px dashed var(--green);text-align:left;}
-  .location-optional-box .title-sm{font-size:13px;font-weight:800;color:var(--green-dk);margin:0 0 6px;}
-  .location-optional-box .text-sm{font-size:12px;line-height:1.45;color:var(--ink-soft);margin:0 0 10px;}
-  .location-optional-box button{width:100%;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:11px 14px;border:none;border-radius:12px;background:var(--green);color:#fff;cursor:pointer;}
-  button.btn{width:100%;font-family:'Baloo 2',sans-serif;font-size:19px;font-weight:700;padding:17px 18px;border:none;border-radius:16px;background:var(--green);color:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(31,107,76,.28);display:flex;align-items:center;justify-content:center;gap:8px;}
-  button.btn:active{transform:scale(.97);}
-  button.btn:disabled{opacity:.55;box-shadow:none;}
-  button.btn.ghost{background:transparent;color:var(--ink-soft);box-shadow:none;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px;}
-  .spinner{width:20px;height:20px;border-radius:50%;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .error-box{background:var(--red-lt);color:#8a2f2f;border-radius:12px;padding:12px 14px;font-size:14px;font-weight:600;margin-bottom:18px;display:none;text-align:center;}
-  .error-box.show{display:block;animation:shake .35s;}
-  @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
-  .loading-note{font-size:13px;color:var(--ink-soft);text-align:center;margin-top:18px;min-height:18px;}
-  .app-header{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;}
-  .greet{font-size:13px;color:var(--ink-soft);font-weight:600;}
-  .greet b{color:var(--ink);font-size:16px;font-family:'Baloo 2',sans-serif;}
-  .code-pill{background:var(--green-lt);color:var(--green-dk);font-weight:800;font-size:12px;padding:6px 12px;border-radius:20px;letter-spacing:.03em;}
-  .switch-link{font-size:12px;color:var(--ink-soft);text-decoration:underline;background:none;border:none;padding:6px;cursor:pointer;font-family:'Inter';}
-  .hero-today{margin:14px 4px 6px;border-radius:24px;padding:16px 20px;background:linear-gradient(135deg,var(--green) 0%,var(--green-dk) 100%);color:#fff;box-shadow:0 14px 30px rgba(21,74,52,.35);position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:16px;}
-  .hero-today .hero-left{display:flex;flex-direction:column;flex:1;min-width:0;}
-  .hero-today .label{font-size:12px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;opacity:.85;}
-  .hero-today .datebig{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:800;margin:2px 0 0;line-height:1.15;white-space:nowrap;}
-  .hero-today .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;z-index:2;}
-  .hero-status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 12px;border-radius:30px;font-weight:800;font-size:13px;}
-  .hero-countdown{margin-top:0;font-size:11px;font-weight:700;opacity:.92;}
-  .attendance-shell{flex:0 0 auto;display:flex;flex-direction:column;gap:14px;padding:10px 16px 30px;}
-  .planned-wrap{margin:14px 4px 0;}
-  .planned-title{font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;padding:0 4px 8px;}
-  .society-card{background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(28,38,33,.06);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;border-left:5px solid var(--amber);}
-  .society-info{flex:1;min-width:0;}
-  .society-name{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:15px;color:var(--ink);line-height:1.2;}
-  .society-sub{font-size:12px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
-  .society-sub .tag{display:inline-block;background:var(--amber-lt);color:#93650f;font-weight:700;font-size:10px;padding:2px 7px;border-radius:10px;margin-right:5px;}
-  .map-btn{background:var(--green);color:#fff;text-decoration:none;font-size:12px;font-weight:800;padding:9px 13px;border-radius:12px;white-space:nowrap;flex-shrink:0;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;}
-  .no-society-card{background:#FFF5F5;border:1.5px dashed var(--red);border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
-  .no-society-info{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#D64545;}
-  .info-btn{width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;border:none;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-  .ty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:4px;}
-  .ty-card{background:#fff;border-radius:18px;box-shadow:0 4px 14px rgba(28,38,33,.07);padding:14px;display:flex;flex-direction:column;gap:6px;position:relative;border:2px solid transparent;}
-  .ty-card.highlight-today{border-color:var(--green);}
-  .ty-card.highlight-yesterday{border-color:var(--amber);}
-  .ty-card.is-pending{border-color:var(--ink) !important;}
-  .ty-card.is-pending .ty-label{color:var(--ink) !important;}
-  .ty-card.is-pending .ty-countdown{color:var(--red) !important;}
-  .ty-card-top{display:flex;align-items:center;justify-content:space-between;}
-  .ty-date{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:19px;color:var(--ink);line-height:1;}
-  .ty-date span{display:block;font-size:10px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;margin-top:2px;}
-  .ty-emoji{font-size:22px;}
-  .ty-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
-  .ty-card.highlight-today .ty-label{color:var(--green);}
-  .ty-card.highlight-yesterday .ty-label{color:#93650f;}
-  .ty-countdown{font-size:11.5px;color:var(--blue);font-weight:700;}
-  .status-pill{font-size:12px;font-weight:800;padding:7px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
-  .status-pill.p{background:var(--green-lt);color:var(--green-dk);}
-  .status-pill.l{background:var(--blue-lt);color:#2451b3;}
-  .status-pill.hd{background:var(--amber-lt);color:#93650f;}
-  .status-pill.a{background:var(--red-lt);color:#8a2f2f;}
-  .status-pill.wo{background:var(--slate-lt);color:#4f5c64;}
-  .status-pill.pending{background:var(--red-lt);color:var(--ink);border:1px solid rgba(28,38,33,0.25);font-weight:800;}
-  .status-pill.future{background:#F2F2F2;color:#a3a3a3;}
-  .status-pill.other{background:var(--slate-lt);color:#4f5c64;}
-  .calendar-panel{background:#fff;border-radius:24px;box-shadow:var(--shadow);padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px;}
-  .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px;}
-  .calendar-title{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:var(--green-dk);text-align:center;}
-  .calendar-nav-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--milk-2);background:#fff;color:var(--green-dk);font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
-  .calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:11px;font-weight:800;color:var(--ink-soft);text-align:center;letter-spacing:.05em;text-transform:uppercase;}
-  .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;flex:1;min-height:0;}
-  .calendar-cell{min-height:58px;border-radius:16px;background:var(--milk);padding:16px 4px 6px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;position:relative;overflow:hidden;}
-  .calendar-cell.empty{background:transparent;}
-  .calendar-cell.today{box-shadow:inset 0 0 0 2px var(--green);}
-  .calendar-cell.future{opacity:.45;}
-  .calendar-cell .badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:#fff;color:var(--ink);border:2px solid transparent;}
-  .calendar-cell .sub{font-size:8.5px;line-height:1.05;font-weight:700;color:var(--ink-soft);text-align:center;min-height:9px;}
-  .calendar-cell.p .badge{background:var(--green);color:#fff;}
-  .calendar-cell.l .badge{background:var(--blue);color:#fff;}
-  .calendar-cell.hd .badge{background:var(--amber);color:#fff;}
-  .calendar-cell.a .badge{background:var(--red);color:#fff;}
-  .calendar-cell.wo .badge{background:var(--slate);color:#fff;}
-  .calendar-cell.pending .badge{background:var(--red-lt);border-color:var(--red);color:var(--red);}
-  .calendar-cell.pending .sub{color:var(--red);}
-  .calendar-cell.future .badge{background:#F2F2F2;color:#a3a3a3;border-color:#E3E3E3;}
-  .calendar-cell.other .badge{background:var(--slate-lt);color:var(--ink);}
-  .calendar-cell .mini{position:absolute;left:0;right:0;top:4px;font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);text-align:center;}
-  .calendar-legend{display:flex;flex-wrap:wrap;gap:8px;padding-top:2px;}
-  .legend-chip{display:inline-flex;align-items:center;gap:6px;background:var(--milk);border-radius:999px;padding:6px 10px;font-size:10px;font-weight:700;color:var(--ink-soft);}
-  .legend-dot{width:10px;height:10px;border-radius:50%;background:var(--slate);}
-  .legend-chip.p .legend-dot{background:var(--green);}
-  .legend-chip.l .legend-dot{background:var(--blue);}
-  .legend-chip.hd .legend-dot{background:var(--amber);}
-  .legend-chip.a .legend-dot{background:var(--red);}
-  .legend-chip.wo .legend-dot{background:var(--slate);}
-  .legend-chip.pending .legend-dot{background:var(--red-lt);border:1.5px solid var(--red);}
-  .install-banner{margin:14px 4px 4px;background:#fff;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);border:1.5px dashed var(--green);}
-  .install-banner.hide{display:none;}
-  .install-banner .txt{flex:1;}
-  .install-banner .txt b{font-size:14px;display:block;color:var(--green-dk);font-family:'Baloo 2',sans-serif;}
-  .install-banner .txt span{font-size:12px;color:var(--ink-soft);}
-  .install-banner button{background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:12px;cursor:pointer;}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(28,38,33,.55);display:none;align-items:flex-end;justify-content:center;z-index:50;}
-  .modal-backdrop.show{display:flex;}
-  .modal-sheet{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:26px 24px 34px;animation:slideup .25s ease;}
-  @keyframes slideup{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .modal-sheet h3{font-size:19px;color:var(--green-dk);margin-bottom:14px;}
-  .step-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
-  .step-num{width:26px;height:26px;border-radius:50%;background:var(--green-lt);color:var(--green-dk);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .step-row p{margin:0;font-size:14px;color:var(--ink);line-height:1.4;}
-  .location-status{font-size:13px;font-weight:700;color:var(--red);margin:-10px 0 18px;min-height:18px;line-height:1.4;}
-  .location-status.ok{color:var(--green-dk);}
-  @media (max-width:560px){
-    .hero-today{margin:10px 4px 4px;padding:12px 14px;}
-    .hero-today .datebig{font-size:22px;}
-    .calendar-panel{border-radius:22px;padding:12px;}
-    .calendar-cell{min-height:52px;border-radius:14px;padding:14px 2px 4px;}
-    .calendar-title{font-size:20px;}
+
+  body {
+    background-color: var(--milk);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
   }
-  ::-webkit-scrollbar{display:none;}
-  @keyframes pulseLoad{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.75;}}
+
+  .font-heading {
+    font-family: 'Baloo 2', sans-serif;
+  }
+
+  /* Custom pulsing animation for the notice icon */
+  @keyframes alertPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.06); opacity: 0.9; }
+  }
+
+  .pulse-icon {
+    animation: alertPulse 2s infinite ease-in-out;
+  }
 </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6">
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGRSQ9FS" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-<main class="screen active" id="screen-loading">
-  <div class="content" style="align-items:center;">
-    <img class="brand-logo-img hero-icon" style="animation:pulseLoad 1.1s ease-in-out infinite;object-fit:contain;" alt="Milkbasket logo">
-    <div class="title">Milkbasket Attendance</div>
-    <div class="subtitle">Growth Team • Loading your details…</div>
-    <div class="loading-note" id="loading-note"></div>
-  </div>
-</main>
-
-<main class="screen" id="screen-location">
-  <div class="content" style="align-items:center;">
-    <div class="card" style="text-align:center;">
-      <svg class="hero-icon" viewBox="0 0 100 100"><use href="#warnSymbol"/></svg>
-      <div class="title">Location access optional</div>
-      <div class="subtitle" id="location-message">You can continue without location. If you allow it, we will include location in your response logs.</div>
-      <div class="location-status" id="location-status-note"></div>
-      <button class="btn" id="btn-allow-location">Allow Location Access</button>
-      <button class="btn ghost" id="btn-location-help" type="button">I already allowed it</button>
+<header class="w-full max-w-md flex items-center justify-between py-4 border-b border-stone-200 mb-4">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-[#1F6B4C] flex items-center justify-center text-white font-bold text-xl shadow-md">
+      MB
+    </div>
+    <div>
+      <h1 class="font-heading font-extrabold text-lg text-[#154A34] leading-tight">Milkbasket Attendance</h1>
+      <p class="text-xs text-[#5C6B62] font-medium">Growth Team · Associate Portal</p>
     </div>
   </div>
-</main>
+  <span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-300">
+    Shifted / स्थानांतरित
+  </span>
+</header>
 
-<main class="screen" id="screen-error">
-  <div class="content" style="align-items:center;">
-    <div class="card" style="text-align:center;">
-      <svg class="hero-icon" viewBox="0 0 100 100"><use href="#warnSymbol"/></svg>
-      <div class="title">Something went wrong</div>
-      <div class="subtitle" id="error-message-text">Please check your internet connection and try again.</div>
-      <button class="btn" id="btn-error-retry">Try Again</button>
-      <button class="btn ghost" id="btn-error-back">Use a Different Mail ID</button>
+<main class="w-full max-w-md flex-1 flex flex-col justify-center my-auto">
+  <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-stone-100 flex flex-col items-center text-center relative overflow-hidden">
+    
+    <!-- Top Decorative Badge -->
+    <div class="w-20 h-20 rounded-full bg-amber-100 border-4 border-amber-50 flex items-center justify-center mb-5 pulse-icon shadow-inner">
+      <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
     </div>
-  </div>
-</main>
 
-<main class="screen" id="screen-login">
-  <div class="brandbar">
-    <img class="brand-logo-img brandbar-logo" alt="Milkbasket logo">
-    <div class="word"><h1>Milkbasket Attendance</h1><small>Attendance · Growth Team</small></div>
-  </div>
-  <div class="content">
-    <div class="card">
-      <svg class="hero-icon" viewBox="0 0 100 100"><use href="#mailSymbol"/></svg>
-      <div class="title">Welcome!</div>
-      <div class="subtitle">Enter your registered Mail ID to see your attendance.</div>
-      <div class="error-box" id="login-error">Mail ID not found.</div>
-      <label class="field-label" for="login-mail">Your Mail ID</label>
-      <input type="email" id="login-mail" placeholder="you@example.com" autocomplete="off">
-      <div class="hint">Only your own attendance will be shown — tied to this mail ID.</div>
-  
-      </div>
-      <button class="btn" id="btn-login"><span id="login-btn-text">Continue</span></button>
-    </div>
-  </div>
-</main>
-
-<div class="modal-backdrop" id="mail-mismatch-modal">
-  <div class="modal-sheet" style="text-align:center;">
-    <svg class="hero-icon" style="width:64px;height:64px;" viewBox="0 0 100 100"><use href="#warnSymbol"/></svg>
-    <h3 style="text-align:center;">Mail ID Not Registered</h3>
-    <p style="font-size:14.5px;color:var(--ink);line-height:1.55;margin:0 0 22px;">
-      The mail ID you entered — <b id="mismatch-mail-display"></b> — doesn't match our records.
-      Please ask your reporting manager to update your mail ID.
+    <!-- Main Title in Hindi & English -->
+    <h2 class="font-heading text-2xl font-extrabold text-[#154A34] leading-tight mb-1">
+      यह ऐप बंद कर दिया गया है!
+    </h2>
+    <p class="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-4">
+      This app has been shifted / closed!
     </p>
-    <button class="btn" id="btn-close-mismatch">OK, Got It</button>
-  </div>
-</div>
 
-<main class="screen" id="screen-attendance">
-  <div class="attendance-shell">
-    <div class="app-header">
-      <div class="greet">Hello,<br><b id="att-name">—</b></div>
-      <div style="text-align:right;"><div class="code-pill" id="att-code">—</div><br><button class="switch-link" id="btn-switch">.</button></div>
-    </div>
-    <div class="hero-today" id="hero-today">
-      <div class="hero-left"><div class="label">Today</div><div class="datebig" id="today-date">—</div></div>
-      <div class="hero-right">
-        <div class="hero-status-pill"><span id="today-emoji">—</span><span id="today-status">—</span></div>
-        <div class="hero-countdown" id="today-countdown"></div>
+    <!-- Message Body -->
+    <div class="bg-[#FBF9F4] rounded-2xl p-4 border border-stone-200 text-left w-full space-y-3 mb-6">
+      
+      <!-- Hindi Message -->
+      <div>
+        <p class="text-sm font-bold text-stone-800 leading-snug">
+          📢 कृपया नए पोर्टल (होम पेज) पर जाएं:
+        </p>
+        <p class="text-xs text-stone-600 leading-relaxed mt-0.5">
+          अपनी अटेंडेंस, असाइन की गई सोसाइटी या आपके द्वारा हासिल किए गए कस्टमर का रोज़ाना का लाइव कन्वर्ज़न देखने के लिए। अब हमेशा मुख्य होम पेज लिंक का उपयोग करें। भविष्य में लिंक बदला जा सकता है, इसलिए होम पेज लिंक ही हमेशा अपडेट रहेगा।
+        </p>
       </div>
-    </div>
-    <div class="planned-wrap" id="planned-wrap">
-      <div class="planned-title">📍 Today's Planned Visit(s)</div>
-      <div id="planned-list"></div>
-    </div>
-    <div class="install-banner" id="install-banner">
-      <img class="brand-logo-img" style="width:38px;height:38px;object-fit:contain;" alt="Milkbasket logo">
-      <div class="txt"><b>Add to Home Screen</b><span>Open like an app, one tap</span></div>
-      <button id="btn-show-install">Install</button>
-    </div>
-    <div class="ty-grid" id="ty-grid"></div>
-    <div class="calendar-panel">
-      <div class="calendar-toolbar">
-        <button class="calendar-nav-btn" id="cal-prev" aria-label="Previous month">‹</button>
-        <div style="flex:1;min-width:0;"><div class="calendar-title" id="cal-month-label">—</div></div>
-        <button class="calendar-nav-btn" id="cal-next" aria-label="Next month">›</button>
+
+      <hr class="border-dashed border-stone-300">
+
+      <!-- English Message -->
+      <div>
+        <p class="text-xs font-bold text-stone-700 leading-snug">
+          📢 Please go to the official Home Page:
+        </p>
+        <p class="text-[11px] text-stone-500 leading-relaxed mt-0.5">
+          Always visit the main home page for to see attendance or assigned society or live daily conversion customer acquired by you . This link may change in the future, so please bookmark and always open the main home page link.
+        </p>
       </div>
-      <div class="calendar-weekdays"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
-      <div class="calendar-grid" id="calendar-grid"></div>
-      <div class="calendar-legend">
-        <span class="legend-chip p"><span class="legend-dot"></span>Present</span>
-        <span class="legend-chip hd"><span class="legend-dot"></span>Half Day</span>
-        <span class="legend-chip l"><span class="legend-dot"></span>Leave</span>
-        <span class="legend-chip a"><span class="legend-dot"></span>Absent</span>
-        <span class="legend-chip wo"><span class="legend-dot"></span>Week Off</span>
-        <span class="legend-chip pending"><span class="legend-dot"></span>Pending</span>
-      </div>
+
     </div>
+
+    <!-- Primary Button: Go to Home Page -->
+    <a id="btn-go-home" 
+       href="https://sites.google.com/milkbasket.com/bde-attendance/bde-attendance" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="w-full py-4 px-6 rounded-2xl bg-[#1F6B4C] hover:bg-[#154A34] text-white font-heading font-bold text-xl shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform flex items-center justify-center gap-2 mb-3">
+      <span>होम पेज पर जाएं</span>
+      <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+      </svg>
+    </a>
+    <p class="text-[11px] text-stone-400 font-medium mb-5">Go to Home Page (Official Portal)</p>
+
+    <!-- URL Box -->
+    <div class="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 flex items-center justify-between gap-2 mb-4 text-left">
+      <div class="truncate text-xs font-mono text-stone-600 select-all" id="target-url">
+        https://sites.google.com/milkbasket.com/bde-attendance/bde-attendance
+      </div>
+      <button id="btn-copy-link" 
+              onclick="copyHomeLink()" 
+              class="shrink-0 bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 012-2v-8a2 2 0 01-2-2h-8a2 2 0 01-2 2v8a2 2 0 012 2z"></path>
+        </svg>
+        <span id="copy-btn-text">कॉपी / Copy</span>
+      </button>
+    </div>
+
+    <!-- Secondary Action Buttons: WhatsApp & Save Notes -->
+    <div class="grid grid-cols-1 gap-2.5 w-full">
+      
+      <!-- WhatsApp Share Button -->
+      <a id="btn-whatsapp-share" 
+         href="https://api.whatsapp.com/send?text=%F0%9F%93%A3%20*Milkbasket%20Attendance%20Portal%20Link%20Changed*%0A%0A%E0%A4%95%E0%A5%83%E0%A4%AA%E0%A4%AF%E0%A4%BE%20%E0%A4%A8%E0%A4%8F%20%E0%A4%B9%E0%A5%8B%E0%A4%AE%20%E0%A4%AA%E0%A5%87%E0%A4%9C%20%E0%A4%AA%E0%A4%B0%20%E0%A4%9C%E0%A4%BE%E0%A4%8F%E0%A4%82%3A%0Ahttps://sites.google.com/milkbasket.com/bde-attendance/bde-attendance" 
+         target="_blank"
+         class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow transition-transform active:scale-95 flex items-center justify-center gap-2">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        </svg>
+        <span>WhatsApp पर शेयर या सेव करें</span>
+      </a>
+      <p class="text-[11px] text-stone-400 font-medium">Share or save link on personal WhatsApp</p>
+
+    </div>
+
   </div>
 </main>
 
-<div class="modal-backdrop" id="install-modal">
-  <div class="modal-sheet">
-    <h3>Add this app to your Home Screen</h3>
-    <div class="step-row"><div class="step-num">1</div><p>Tap the <b>Share</b> icon (iPhone) or the <b>⋮ menu</b> (Android Chrome) in your browser.</p></div>
-    <div class="step-row"><div class="step-num">2</div><p>Choose <b>"Add to Home Screen"</b>.</p></div>
-    <div class="step-row"><div class="step-num">3</div><p>Tap <b>Add</b>. The Milkbasket icon will appear on your phone, just like any other app!</p></div>
-    <button class="btn" id="btn-close-modal">Got it</button>
-  </div>
-</div>
+<footer class="w-full max-w-md text-center py-4 text-xs text-stone-400 font-medium">
+  Milkbasket Operations &copy; 2026. All rights reserved.
+</footer>
 
-<div class="modal-backdrop" id="society-info-modal">
-  <div class="modal-sheet" style="text-align:center;">
-    <svg class="hero-icon" style="width:64px;height:64px;" viewBox="0 0 100 100"><use href="#warnSymbol"/></svg>
-    <h3 style="text-align:center;color:var(--red);margin-bottom:10px;">Incentive Eligibility</h3>
-    <p style="font-size:14.5px;color:var(--ink);line-height:1.55;margin:0 0 8px;font-weight:bold;">You aren't mapped to a society yet, hence you're not eligible for incentives today.</p>
-    <p style="font-size:14.5px;color:var(--ink);line-height:1.55;margin:0 0 22px;">Reach out to your TL to get mapped in the Daily Planning Sheet and start earning benefits.</p>
-    <button class="btn" id="btn-close-society-modal" style="background:var(--red);box-shadow:0 8px 18px rgba(214,69,69,0.28);">Close</button>
-  </div>
+<!-- Toast notification box -->
+<div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-stone-900 text-white text-xs font-bold py-2.5 px-5 rounded-full shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2">
+  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+  </svg>
+  <span id="toast-message">लिंक कॉपी हो गया! / Link Copied!</span>
 </div>
-
-<svg width="0" height="0" style="position:absolute;">
-  <defs>
-    <symbol id="warnSymbol" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="40" fill="#FBE7E7"/>
-      <rect x="46" y="30" width="8" height="28" rx="4" fill="#D64545"/>
-      <circle cx="50" cy="66" r="5" fill="#D64545"/>
-    </symbol>
-    <symbol id="mailSymbol" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="40" fill="#FDF1DC"/>
-      <rect x="28" y="38" width="44" height="30" rx="5" fill="#F2A93B"/>
-      <path d="M28 40l22 18 22-18" stroke="#FBF9F4" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    </symbol>
-  </defs>
-</svg>
 
 <script>
-/* Same embedded-logo trick as before — replace with your own base64 PNG */
-const LOGO_SRC = "data:image/svg+xml;base64," + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" rx="12" fill="%231F6B4C"/></svg>');
-document.querySelectorAll('.brand-logo-img').forEach(img => { img.src = LOGO_SRC; });
+  const HOME_URL = "https://sites.google.com/milkbasket.com/bde-attendance/bde-attendance";
 
-/* ================================================================
-   STATE + NAVIGATION  (unchanged from the Apps Script version)
-   ================================================================ */
-const STORE_KEY = 'mb_att_mail';
-let currentMail = localStorage.getItem(STORE_KEY) || '';
-let currentCode = '';
-let pendingTimeoutId = null;
-const CALL_TIMEOUT_MS = 15000;
-let attendanceDays = [];
-let attendanceMonth = new Date();
-let deferredInstallPrompt = null;
-let locationState_ = { status: 'unknown' };
-let locationPromptPromise_ = null;
-
-/* ================================================================
-   *** ONLY CHANGE FROM THE APPS SCRIPT VERSION IS IN THIS BLOCK ***
-   Replaces google.script.run with fetch() calls to Netlify Functions.
-   Every other function in the file calls these the exact same way
-   it called google.script.run before, so nothing else had to change.
-   ================================================================ */
-const FN_BASE = '/.netlify/functions';
-
-function callFunction_(name, payload) {
-  return fetch(`${FN_BASE}/${name}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload || {})
-  }).then(r => r.json());
-}
-
-const serverRun = {
-  withSuccessHandler(successFn) {
-    return {
-      withFailureHandler(failFn) {
-        return {
-          loginByMail(mail) {
-            callFunction_('login-by-mail', { mail }).then(successFn).catch(err => failFn({ message: err.message }));
-          },
-          getAttendance(code) {
-            callFunction_('get-attendance', { code }).then(successFn).catch(err => failFn({ message: err.message }));
-          }
-        };
-      }
-    };
-  }
-};
-
-/* ================================================================
-   ACTIVITY LOGGING — same behaviour as before, just posts to
-   /.netlify/functions/log-response instead of google.script.run
-   ================================================================ */
-function getDeviceInfo_(){
-  return {
-    userAgent: navigator.userAgent || '',
-    platform: navigator.platform || '',
-    language: navigator.language || '',
-    screen: (screen.width + 'x' + screen.height)
-  };
-}
-
-function requestLocationAccess_(forceNew = false){
-  if (locationPromptPromise_) return locationPromptPromise_;
-  if (!forceNew && locationState_.status === 'granted') {
-    return Promise.resolve(locationState_);
-  }
-  locationPromptPromise_ = new Promise((resolve) => {
-    if (!navigator.geolocation) {
-      locationState_ = { status: 'unsupported' };
-      resolve(locationState_);
-      return;
+  // Function to copy link to clipboard
+  function copyHomeLink() {
+    const dummyInput = document.createElement("input");
+    document.body.appendChild(dummyInput);
+    dummyInput.value = HOME_URL;
+    dummyInput.select();
+    
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch (err) {
+      copied = false;
     }
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        locationState_ = {
-          status: 'granted',
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          accuracy: pos.coords.accuracy
-        };
-        resolve(locationState_);
-      },
-      err => {
-        locationState_ = {
-          status: err && err.code === 1 ? 'denied' : 'failed',
-          message: err && err.message ? err.message : ''
-        };
-        locationPromptPromise_ = null;
-        resolve(locationState_);
-      },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-    );
+    document.body.removeChild(dummyInput);
+
+    if (!copied && navigator.clipboard) {
+      navigator.clipboard.writeText(HOME_URL);
+      copied = true;
+    }
+
+    const btnText = document.getElementById("copy-btn-text");
+    if (btnText) {
+      btnText.textContent = "कॉपी किया! ✓";
+      setTimeout(() => {
+        btnText.textContent = "कॉपी / Copy";
+      }, 2500);
+    }
+
+    showToast("लिंक कॉपी हो गया! / Link Copied!");
+  }
+
+  // Toast message notification
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toast-message");
+    if (toast && toastMsg) {
+      toastMsg.textContent = msg;
+      toast.classList.remove("opacity-0");
+      toast.classList.add("opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0");
+      }, 3000);
+    }
+  }
+
+  // Analytics event tracking fallback
+  function trackClick(actionName) {
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'app_redirect_click',
+        action: actionName,
+        target_url: HOME_URL
+      });
+    }
+  }
+
+  document.getElementById('btn-go-home').addEventListener('click', function() {
+    trackClick('go_to_home_page');
   });
-  return locationPromptPromise_;
-}
 
-async function getGeolocationPermissionState_(){
-  try {
-    if (!navigator.permissions || !navigator.permissions.query) return 'unknown';
-    const result = await navigator.permissions.query({ name: 'geolocation' });
-    return result && result.state ? result.state : 'unknown';
-  } catch (err) {
-    return 'unknown';
-  }
-}
-
-async function getLocationForLogging_(){
-  if (locationState_.status === 'granted') return locationState_;
-  const permissionState = await getGeolocationPermissionState_();
-  if (permissionState !== 'granted') {
-    return { status: permissionState === 'denied' ? 'denied' : 'not_granted' };
-  }
-  return requestLocationAccess_(false);
-}
-
-function trackEvent(action, mailOverride){
-  try {
-    const mailInput = document.getElementById('login-mail');
-    const mail = mailOverride || (mailInput ? mailInput.value.trim() : '') || currentMail || '';
-    const device = getDeviceInfo_();
-    getLocationForLogging_().then(loc => {
-      const payload = {
-        action, mail, page: (window.location.href || '').split('?')[0],
-        lat: loc.lat ?? null, lng: loc.lng ?? null, locAccuracy: loc.accuracy ?? null, locStatus: loc.status || '',
-        userAgent: device.userAgent, platform: device.platform, language: device.language, screen: device.screen
-      };
-      // Also push to dataLayer so GTM can fire a GA4 event off the same click
-      if (window.dataLayer) window.dataLayer.push({ event: 'mb_action', mb_action: action, mb_mail: mail });
-      callFunction_('log-response', payload).catch(() => {});
-    });
-  } catch (e) { console.warn('trackEvent failed', e); }
-}
-
-document.addEventListener('click', (e) => {
-  const el = e.target.closest('button, a.map-btn, a.info-btn');
-  if (!el) return;
-  const label = (el.id && el.id.trim()) || (el.textContent || '').trim().slice(0, 60) || el.className;
-  trackEvent('Clicked: ' + label);
-});
-
-function showScreen(id){
-  clearPendingTimeout_();
-  if (id !== 'screen-attendance') hideInstallBanner();
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById(id);
-  if (target) target.classList.add('active');
-}
-function showLocationScreen(message, statusText){
-  const messageEl = document.getElementById('location-message');
-  const statusEl = document.getElementById('location-status-note');
-  if (messageEl && message) messageEl.textContent = message;
-  if (statusEl) {
-    statusEl.textContent = statusText || '';
-    statusEl.className = 'location-status' + (statusText ? ' ok' : '');
-  }
-  showScreen('screen-location');
-}
-function setBusy(btn, textEl, busy, label){
-  btn.disabled = busy;
-  textEl.innerHTML = busy ? '<span class="spinner"></span>' : label;
-}
-function clearPendingTimeout_(){
-  if (pendingTimeoutId) { clearTimeout(pendingTimeoutId); pendingTimeoutId = null; }
-}
-function runWithTimeout_(retryFn){
-  clearPendingTimeout_();
-  pendingTimeoutId = setTimeout(() => {
-    pendingTimeoutId = null;
-    showErrorScreen('This is taking longer than expected. Please check your internet connection and tap Try Again.', retryFn);
-  }, CALL_TIMEOUT_MS);
-  return {
-    withSuccessHandler(fn) {
-      return {
-        withFailureHandler(failFn) {
-          return serverRun.withSuccessHandler((res) => { clearPendingTimeout_(); fn(res); })
-                           .withFailureHandler((err) => { clearPendingTimeout_(); failFn(err); });
-        }
-      };
-    }
-  };
-}
-
-let lastRetryFn = null;
-function showErrorScreen(message, retryFn){
-  lastRetryFn = retryFn || null;
-  document.getElementById('error-message-text').textContent = message;
-  showScreen('screen-error');
-}
-document.getElementById('btn-error-retry').addEventListener('click', () => { if (lastRetryFn) lastRetryFn(); });
-document.getElementById('btn-error-back').addEventListener('click', () => {
-  localStorage.removeItem(STORE_KEY); currentMail = ''; showScreen('screen-login');
-});
-
-async function ensureLocationReady_(showGate, promptNow = false){
-  return true;
-}
-
-window.addEventListener('load', async () => {
-  trackEvent(currentMail ? 'App Opened / Refreshed (auto-login)' : 'App Opened / Refreshed (no saved mail)');
-  if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
-});
-
-async function attemptAutoLogin(){
-  showScreen('screen-loading');
-  runWithTimeout_(attemptAutoLogin).withSuccessHandler(res => handleLoginResult(res, currentMail)).withFailureHandler(onServerError).loginByMail(currentMail);
-}
-function onServerError(err){
-  const msg = (err && err.message) ? err.message : 'Something went wrong. Please try again.';
-  showErrorScreen(msg, () => { if (currentMail) attemptAutoLogin(); else showScreen('screen-login'); });
-}
-
-document.getElementById('btn-login').addEventListener('click', submitLogin);
-document.getElementById('login-mail').addEventListener('keydown', e => { if (e.key === 'Enter') submitLogin(); });
-
-async function submitLogin(){
-  const mail = document.getElementById('login-mail').value.trim();
-  const btn = document.getElementById('btn-login');
-  const txt = document.getElementById('login-btn-text');
-  document.getElementById('login-error').classList.remove('show');
-  if (!mail) return;
-  trackEvent('Submitted Mail ID on Login', mail);
-  setBusy(btn, txt, true, 'Continue');
-  runWithTimeout_(submitLogin)
-    .withSuccessHandler(res => { setBusy(btn, txt, false, 'Continue'); handleLoginResult(res, mail); })
-    .withFailureHandler(err => { setBusy(btn, txt, false, 'Continue'); onServerError(err); })
-    .loginByMail(mail);
-}
-
-function handleLoginResult(res, typedMail){
-  const mail = typedMail || currentMail;
-  if (res.status === 'ok') {
-    currentMail = mail; currentCode = res.code;
-    localStorage.setItem(STORE_KEY, mail);
-    loadAttendance(res.code);
-  } else if (res.status === 'not_registered') {
-    localStorage.removeItem(STORE_KEY); currentMail = '';
-    showScreen('screen-login'); showMailMismatchModal(mail);
-  } else if (res.status === 'code_missing_in_sheet') {
-    showErrorScreen('Your mail is approved, but your code (' + res.code + ') could not be found in the attendance sheet. Please contact your Team Leader.', () => showScreen('screen-login'));
-  } else if (res.status === 'invalid_mail') {
-    document.getElementById('login-error').textContent = 'Please enter a valid mail ID.';
-    document.getElementById('login-error').classList.add('show');
-  } else if (res.status === 'error') {
-    onServerError(res);
-  } else {
-    document.getElementById('login-error').textContent = 'Something went wrong. Please try again.';
-    document.getElementById('login-error').classList.add('show');
-  }
-}
-
-function showMailMismatchModal(mail){
-  document.getElementById('mismatch-mail-display').textContent = mail;
-  document.getElementById('mail-mismatch-modal').classList.add('show');
-}
-document.getElementById('btn-close-mismatch').addEventListener('click', () => {
-  document.getElementById('mail-mismatch-modal').classList.remove('show');
-});
-document.getElementById('btn-switch').addEventListener('click', () => {
-  localStorage.removeItem(STORE_KEY); currentMail = ''; currentCode = '';
-  document.getElementById('login-mail').value = ''; showScreen('screen-login');
-});
-
-function loadAttendance(code){
-  showScreen('screen-loading');
-  runWithTimeout_(() => loadAttendance(code)).withSuccessHandler(renderAttendance).withFailureHandler(onServerError).getAttendance(code);
-}
-
-function renderAttendance(res){
-  if (res.status === 'error') { onServerError(res); return; }
-  if (res.status !== 'ok') { showErrorScreen('Could not load your attendance. Please try again.', () => loadAttendance(currentCode)); return; }
-  const p = res.profile;
-  document.getElementById('att-name').textContent = p.name || 'Associate';
-  document.getElementById('att-code').textContent = p.mbCode || p.vendorCode || '—';
-
-  const today = res.days.find(d => d.isToday);
-  const yesterday = res.days.find(d => d.isYesterday);
-  attendanceDays = res.days || [];
-  attendanceMonth = today ? new Date(today.isoDate + 'T00:00:00') : new Date();
-  attendanceMonth.setDate(1);
-
-  document.getElementById('today-date').textContent = today ? prettyDate(today) : '—';
-  document.getElementById('today-status').textContent = today ? today.status.label : 'No data yet';
-  document.getElementById('today-emoji').textContent = today ? emojiForStatus(today.status.code.toLowerCase()) : '⚪';
-
-  const todayCountdown = document.getElementById('today-countdown');
-  todayCountdown.textContent = (today && today.status.code === 'PENDING') ? countdownText(today.status) + ' left to update' : '';
-
-  renderPlannedToday(res.plannedToday || []);
-  renderMonthCalendar();
-
-  const tyGrid = document.getElementById('ty-grid');
-  tyGrid.innerHTML = '';
-  [today, yesterday].forEach(d => { if (d) tyGrid.appendChild(buildTYCard(d)); });
-  tyGrid.style.display = (today || yesterday) ? 'grid' : 'none';
-
-  showInstallBannerTemporarily();
-  showScreen('screen-attendance');
-}
-
-function buildTYCard(d){
-  const cls = d.status.code.toLowerCase();
-  const [dayNum, monName] = splitDateLabel(d.dateLabel);
-  const card = document.createElement('div');
-  card.className = 'ty-card ' + (d.isToday ? 'highlight-today' : 'highlight-yesterday');
-  if (cls === 'pending') card.classList.add('is-pending');
-  let countdownHtml = '';
-  if (d.status.code === 'PENDING') countdownHtml = '<div class="ty-countdown">' + countdownText(d.status) + ' left to update</div>';
-  card.innerHTML = `
-    <div class="ty-card-top"><div class="ty-date">${dayNum}<span>${monName}</span></div><div class="ty-emoji">${emojiForStatus(cls)}</div></div>
-    <div class="ty-label">${d.isToday ? 'Today' : 'Yesterday'}</div>
-    ${countdownHtml}
-    <div class="status-pill ${cls}">${d.status.label}</div>`;
-  return card;
-}
-
-function renderPlannedToday(visits){
-  const wrap = document.getElementById('planned-wrap');
-  const list = document.getElementById('planned-list');
-  if (!wrap || !list) return;
-  list.innerHTML = '';
-  if (visits && visits.length > 0) {
-    visits.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'society-card';
-      card.innerHTML = `
-        <div class="society-info">
-          <div class="society-name">${v.societyName}</div>
-          <div class="society-sub"><span class="tag">${v.type || 'FOC'}</span>${v.activity || ''}</div>
-        </div>
-        <a href="${v.mapUrl || '#'}" class="map-btn" target="_blank">📍 Open Maps</a>`;
-      list.appendChild(card);
-    });
-  } else {
-    list.innerHTML = `
-      <div class="no-society-card" id="btn-society-info" style="cursor:pointer;">
-        <div class="no-society-info"><span class="warning-icon">⚠️</span><span>Not society mapped today</span></div>
-        <button class="info-btn" aria-label="Incentive eligibility info">i</button>
-      </div>`;
-    document.getElementById('btn-society-info').addEventListener('click', () => {
-      document.getElementById('society-info-modal').classList.add('show');
-    });
-  }
-}
-document.getElementById('btn-close-society-modal').addEventListener('click', () => {
-  document.getElementById('society-info-modal').classList.remove('show');
-});
-document.getElementById('society-info-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'society-info-modal') document.getElementById('society-info-modal').classList.remove('show');
-});
-
-function renderMonthCalendar(){
-  const grid = document.getElementById('calendar-grid');
-  const monthLabel = document.getElementById('cal-month-label');
-  if (!grid || !monthLabel) return;
-  const monthStart = new Date(attendanceMonth); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
-  const start = new Date(monthStart); start.setDate(start.getDate() - start.getDay());
-  const todayKey = toIsoDate_(new Date());
-  const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterdayKey = toIsoDate_(yesterdayDate);
-  const dayMap = new Map((attendanceDays || []).map(day => [day.isoDate, day]));
-  const formatter = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' });
-  monthLabel.textContent = formatter.format(monthStart);
-  grid.innerHTML = '';
-  for (let index = 0; index < 42; index++) {
-    const cellDate = new Date(start); cellDate.setDate(start.getDate() + index);
-    const iso = toIsoDate_(cellDate);
-    const inMonth = cellDate.getMonth() === monthStart.getMonth();
-    const item = dayMap.get(iso);
-    const isToday = iso === todayKey;
-    const isYesterday = iso === yesterdayKey;
-    const cell = document.createElement('div');
-    cell.className = 'calendar-cell';
-    if (!inMonth) { cell.classList.add('empty'); grid.appendChild(cell); continue; }
-    if (isToday) cell.classList.add('today');
-    let statusClass = 'other', subText = '';
-    if (item) { statusClass = item.status.code.toLowerCase(); subText = item.status.label || ''; }
-    else {
-      const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-      const cellStart = new Date(cellDate); cellStart.setHours(0,0,0,0);
-      if (cellStart > todayStart) statusClass = 'future';
-    }
-    cell.classList.add(statusClass);
-    let miniLabel = '';
-    if (isToday) miniLabel = '<div class="mini">TODAY</div>';
-    else if (isYesterday) miniLabel = '<div class="mini">YEST</div>';
-    cell.innerHTML = `${miniLabel}<div class="badge">${cellDate.getDate()}</div><div class="sub">${subText}</div>`;
-    grid.appendChild(cell);
-  }
-}
-
-document.getElementById('cal-prev').addEventListener('click', () => { attendanceMonth.setMonth(attendanceMonth.getMonth() - 1); renderMonthCalendar(); });
-document.getElementById('cal-next').addEventListener('click', () => { attendanceMonth.setMonth(attendanceMonth.getMonth() + 1); renderMonthCalendar(); });
-document.getElementById('btn-allow-location').addEventListener('click', async () => {
-  const ready = await ensureLocationReady_(true, true);
-  if (ready) {
-    trackEvent(currentMail ? 'Location Enabled / Auto-login' : 'Location Enabled / Manual');
-    if (currentMail) attemptAutoLogin(); else showScreen('screen-login');
-  }
-});
-document.getElementById('btn-location-help').addEventListener('click', async () => {
-  showScreen(currentMail ? 'screen-attendance' : 'screen-login');
-});
-document.getElementById('btn-allow-location-optional').addEventListener('click', async () => {
-  const loc = await requestLocationAccess_(true);
-  if (loc.status === 'granted') {
-    const statusEl = document.getElementById('location-status-note');
-    if (statusEl) {
-      statusEl.textContent = 'Location enabled. Future activity logs will include it.';
-      statusEl.className = 'location-status ok';
-    }
-    trackEvent('Location Permission Enabled');
-  } else {
-    const statusEl = document.getElementById('location-status-note');
-    if (statusEl) {
-      statusEl.textContent = 'Location not enabled. The app still works normally.';
-      statusEl.className = 'location-status';
-    }
-  }
-});
-
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; showInstallBannerTemporarily(); });
-function showInstallBannerTemporarily(){ const b = document.getElementById('install-banner'); if (b && deferredInstallPrompt) b.classList.remove('hide'); }
-function hideInstallBanner(){ const b = document.getElementById('install-banner'); if (b) b.classList.add('hide'); }
-document.getElementById('btn-show-install').addEventListener('click', async () => {
-  if (deferredInstallPrompt) {
-    deferredInstallPrompt.prompt();
-    const { outcome } = await deferredInstallPrompt.userChoice;
-    if (outcome === 'accepted') hideInstallBanner();
-    deferredInstallPrompt = null;
-  } else {
-    document.getElementById('install-modal').classList.add('show');
-  }
-});
-document.getElementById('btn-close-modal').addEventListener('click', () => { document.getElementById('install-modal').classList.remove('show'); });
-document.getElementById('install-modal').addEventListener('click', (e) => { if (e.target.id === 'install-modal') document.getElementById('install-modal').classList.remove('show'); });
-
-function toIsoDate_(date) {
-  const y = date.getFullYear(), m = String(date.getMonth() + 1).padStart(2, '0'), d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-function prettyDate(d) {
-  if (!d || !d.isoDate) return '—';
-  const date = new Date(d.isoDate + 'T00:00:00');
-  return date.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' });
-}
-function splitDateLabel(dateLabel) {
-  if (!dateLabel) return ['—', '—'];
-  const parts = dateLabel.trim().split(/[\s-]+/);
-  return parts.length >= 2 ? [parts[0], parts[1].toUpperCase()] : [dateLabel, ''];
-}
-function emojiForStatus(code) {
-  switch (String(code).toLowerCase()) {
-    case 'p': return '🟢'; case 'l': return '🔵'; case 'hd': return '🟡';
-    case 'a': return '🔴'; case 'wo': return '🏠'; case 'pending': return '🕒';
-    case 'future': return '🔒'; default: return '⚪';
-  }
-}
-function countdownText(status) {
-  if (!status) return '0h 00m';
-  if (typeof status.msLeft === 'number') {
-    const safeMs = Math.max(0, status.msLeft);
-    const totalMinutes = Math.ceil(safeMs / 60000);
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return `${hours}h ${String(minutes).padStart(2, '0')}m`;
-  }
-  if (typeof status.hoursLeft === 'number' || typeof status.minutesLeft === 'number') {
-    const hours = Number(status.hoursLeft || 0);
-    const minutes = Number(status.minutesLeft || 0);
-    return `${hours}h ${String(minutes).padStart(2, '0')}m`;
-  }
-  if (status.timeLeft || status.countdown) return String(status.timeLeft || status.countdown);
-  return '0h 00m';
-}
+  document.getElementById('btn-whatsapp-share').addEventListener('click', function() {
+    trackClick('share_whatsapp');
+  });
 </script>
 </body>
 </html>
